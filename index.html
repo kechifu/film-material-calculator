@@ -1,0 +1,455 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>車貼膜材用量與成本試算</title>
+<style>
+:root{font-family:"Microsoft JhengHei",system-ui,sans-serif;color:#172b3b;background:#eff3f6;font-size:15px}*{box-sizing:border-box}body{margin:0}main{max-width:1400px;margin:auto;padding:28px}h1{font-size:29px;margin:0 0 8px}h2{font-size:19px;margin:0 0 16px}p{line-height:1.65;margin:8px 0}.muted{color:#5d7080;font-size:13px}.banner{background:#fff5d8;color:#675013;border-left:4px solid #e7bc50;padding:12px 16px;margin:20px 0}.card{background:#fff;border:1px solid #dbe4ea;border-radius:12px;padding:20px;margin-bottom:18px}.bar{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}.controls{display:flex;gap:12px;flex-wrap:wrap;align-items:end}label{display:grid;gap:6px;font-size:13px}input,select,button{font:inherit;color:inherit}input[type=number]{width:88px}input,select{border:1px solid #b8c8d3;border-radius:6px;padding:7px;background:white}input[type=checkbox]{width:17px;height:17px;accent-color:#087c80}button{border:1px solid #b8c8d3;border-radius:7px;background:#f5f8fa;padding:8px 13px;cursor:pointer}button.primary{background:#087c80;color:#fff;border-color:#087c80}button:disabled{cursor:default;opacity:.5}button:hover{filter:brightness(.97)}button.selected{background:#d5efec;border-color:#087c80}table{border-collapse:collapse;width:100%;font-size:13px}th,td{text-align:left;padding:10px 8px;border-bottom:1px solid #e4ebef;vertical-align:middle}th{color:#557080;font-weight:600;background:#f5f8fa;white-space:nowrap}.table-wrap{overflow:auto}td input.name{width:110px}.checkset{display:flex;gap:8px;white-space:nowrap}.checkset label{display:flex;align-items:center;gap:3px}.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0}.metric{background:#f0f7f7;padding:15px;border-radius:9px}.metric span{display:block;font-size:12px;color:#56717d}.metric strong{display:block;font-size:23px;margin-top:7px;font-variant-numeric:tabular-nums}.errors{color:#9c2626;background:#fff0ed;padding:15px;border-radius:8px}.good{color:#06736c}.bad{color:#9c2626}.pill{display:inline-block;background:#d7eee8;padding:4px 8px;border-radius:5px;font-size:12px}.roll{margin:18px 0}.roll-scroll{overflow:auto;background:#fafcfd;border:1px solid #dce6eb;border-radius:7px;padding:8px}svg text{font-family:"Microsoft JhengHei",sans-serif}.explain{display:grid;grid-template-columns:1fr 1fr;gap:20px}.equation{font-size:14px;background:#edf6f4;padding:12px;margin-top:12px}summary{cursor:pointer;font-size:19px;font-weight:600}details[open]>summary{margin-bottom:16px}#data-label{width:min(680px,100%)}.footer{color:#6b7d88;text-align:center;font-size:12px;padding:8px}.help{max-width:900px}a{color:#087c80}#chosen{font-size:15px}#scenario-table td:nth-child(n+3){font-variant-numeric:tabular-nums}#panel-costs td{font-variant-numeric:tabular-nums}
+@media(max-width:780px){main{padding:14px}.metrics{grid-template-columns:1fr 1fr}.explain{grid-template-columns:1fr}h1{font-size:24px}.card{padding:14px}}@media print{body{background:white}main{max-width:none;padding:0}.controls,.input-section,.footer{display:none}.card{break-inside:avoid;box-shadow:none}.roll-scroll{overflow:visible}button{display:none}}
+</style><style>
+.steps{display:flex;gap:24px;flex-wrap:wrap;padding-left:22px;margin:12px 0}.steps li{flex:1;min-width:180px;line-height:1.6}.steps small{display:block;color:#5d7080}.source-badge{display:inline-block;padding:4px 7px;background:#fff5d8;color:#675013;border-radius:5px;font-size:12px;white-space:nowrap}.source-detail{min-width:170px;max-width:280px}.source-detail summary{font-size:12px;font-weight:400;margin:8px 0!important}.source-detail p{overflow-wrap:anywhere;font-size:12px}#vehicle{max-width:100%}#profile-note{max-width:950px}.privacy{font-size:13px;color:#5d7080}.table-hint{color:#087c80;font-size:13px}button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid #91cfca;outline-offset:2px}
+</style></head><body><main>
+<div class="bar"><div><h1>車貼膜材用量與成本試算</h1><p class="muted">輸入各部位尺寸，比較 150／120／90 cm 卷材的用量、排版與材料費。</p></div><span class="pill">公開試用版 · 非正式報價</span></div>
+<ol class="steps"><li>先試模擬資料<small>頁面已載入虛構全車示例，立即可看結果。</small></li><li>改尺寸與價格<small>長度用 cm；每延米是「該幅寬的一公尺」。</small></li><li>看方案與排版<small>修改後自動計算，也可儲存 JSON 下次使用。</small></li></ol>
+<p class="privacy">資料在你的瀏覽器內計算，本工具不送出輸入資料、不自動儲存。離開前請下載 JSON；重新整理會回到模擬示例。網站主機仍可能留下正常存取紀錄。</p>
+<div class="banner" id="provenance">範例是模擬全車資料。面板尺寸、保留面積、價格及施工條件均非實測，請先換成店家資料。</div>
+<div class="card input-section"><h2>1. 選擇車型與部位，或手動輸入</h2><div class="controls"><label>資料／車型<select id="vehicle" aria-label="資料／車型"></select></label><label>施工部位<select id="part" aria-label="施工部位"></select></label><button id="apply-profile" class="primary">使用這份資料</button><button id="load-example">重設模擬資料</button></div><p id="profile-note" class="muted"></p><p class="muted">「使用這份資料」會取代目前面板。請先儲存 JSON。模板／手動案件的價格會留空；間隔 1 cm、採購進位 10 cm 為可修改的試算初值。第一版只登記 Corolla Cross 2023 引擎蓋，不推算其他部位。</p></div>
+<div class="card input-section"><div class="bar"><h2>2. 填寫膜材價格</h2><div class="controls"><button id="import-input">匯入 JSON</button><input id="import-file" type="file" accept="application/json,.json" hidden><button id="save-input">儲存輸入 JSON</button></div></div>
+<label>資料名稱／尺寸依據<input id="data-label" type="text"></label><div class="table-wrap"><table><thead><tr><th>使用</th><th>幅寬</th><th>材料單價（NT$）</th><th>計價單位</th></tr></thead><tbody id="stocks"></tbody></table></div>
+<div class="controls" style="margin-top:16px"><label>矩形間隔（cm）<input id="gap" type="number" min="0" step="0.1"></label><label>採購長度進位（cm）<input id="billing-step" type="number" min="0.1" step="0.1"></label><button id="calculate" class="primary">重新計算</button></div>
+<p class="muted">單價留空表示未知；0 表示明確零價。採購長度向上進位後才計價。此處只計膜材，未包含列印、油墨、施工、稅與運送。</p></div>
+<div class="card input-section"><details open><summary>3. 面板尺寸與施工條件 <span class="muted" id="panel-count"></span></summary><p class="muted">寬＝卷材橫向，長＝走料方向。尺寸未含施工餘量；例如 80 × 100 cm、每邊餘量 5 cm，實際印製矩形是 90 × 110 cm。保留面積為每塊施工後淨覆蓋面積，未知請留空。</p><p class="table-hint">表格可向右捲動查看旋轉、拼接與資料來源；「來源與限制」可展開。手動修改寬／長後會標成未驗證。</p><div class="table-wrap" tabindex="0" aria-label="面板尺寸表格，可左右捲動"><table><thead><tr><th>部位</th><th>寬 cm</th><th>長 cm</th><th>數量</th><th>每邊餘量 cm</th><th>可用幅寬</th><th>可旋轉90°</th><th>可拼接</th><th>拼接重疊 cm</th><th>每塊保留㎡</th><th>尺寸依據</th><th></th></tr></thead><tbody id="panels"></tbody></table></div><button id="add-panel" style="margin-top:12px">新增部位</button><p class="muted">拼接只估算跨幅方向的等寬分片用料；必須提供重疊量，接縫位置與施工適用性仍由店家決定。餘量 0 僅表示不加餘量，不能視為已確認可施工。</p></details></div>
+<div id="error" role="alert" hidden></div><div id="results" aria-live="polite">
+<div class="card"><div class="bar"><h2>可行方案比較</h2><button id="save-result">下載計算結果</button></div><p id="recommendation"></p><div class="table-wrap"><table id="scenario-table"><thead><tr><th>方案</th><th>可行性</th><th>採購總延米</th><th>採購㎡</th><th>材料成本 NT$</th><th>檢視</th></tr></thead><tbody id="scenarios"></tbody></table></div><p class="muted">混幅總延米為各幅用量相加，應連同分幅明細閱讀。採成熟棚式排版，混幅為部位分組的貪婪方案；推薦僅是本工具已比較的候選中最低成本，非全局最佳。</p></div>
+<div class="card"><h2 id="chosen">目前方案</h2><div id="metrics" class="metrics"></div><div class="explain"><div id="accounting"></div><div id="stock-summary"></div></div><div id="rolls"></div><p class="muted">矩形內含施工餘量及拼接用料。圖中空白是排版餘料，可能可再利用；它已包含在採購量內，不再加一個損耗百分比。圖案印刷本身未由此工具排版。</p></div>
+<div class="card"><h2>各部位用量與材料成本分攤</h2><div class="table-wrap"><table><thead><tr><th>部位</th><th>數量</th><th>幅寬</th><th>含餘量矩形㎡</th><th>拼接額外㎡</th><th>修邊㎡</th><th>分攤成本 NT$</th></tr></thead><tbody id="panel-costs"></tbody></table></div><p class="muted">成本按同幅卷材內的部位矩形面積分攤，包含各自承擔的排版餘料；這是分析分攤，不是每片獨立採購價。</p></div></div>
+<div class="card help"><h2>用量怎麼分</h2><p><b>採購面積</b>＝幅寬 × 進位後採購長度。<b>排版餘料</b>＝採購面積 − 所有印製分片矩形面積。</p><p><b>施工修邊</b>＝完整面板含餘量矩形 − 施工後保留面積。沒有保留面積時，只能算已知的四邊餘量，完整修邊顯示未知。</p><p><b>拼接重疊用料</b>單列，它可能保留為重疊層，不能一律算成修邊損耗。</p><div class="equation">資料完整時：採購㎡＝排版餘料㎡＋施工修邊㎡＋淨覆蓋㎡＋拼接額外㎡</div><p class="muted">同一份實測輸入可於之後接入案件流程。若從既有印製頁面匯入，且頁面已含出血，請勿再重加同一餘量。本工具不估曲面拉伸、不判斷可用刀模，也不自動讀取車輛尺寸。</p></div>
+<p class="footer">膜材規劃工具 · 尺寸來源須自行核對 · 最多 200 類／500 塊面板 · <a href="https://gravbase.com/products/2023-toyota-corolla-cross-v23" target="_blank" rel="noopener noreferrer">模板參考來源</a></p>
+</main><script>const FILM_COST_SIMULATION = {"label": "模擬全車示例（17塊）；非 Corolla Cross 實測尺寸，價格與施工限制皆為示例", "gapCm": 1, "billingStepCm": 10, "stocks": [{"widthCm": 150, "price": 900, "priceBasis": "linearM"}, {"widthCm": 120, "price": 720, "priceBasis": "linearM"}, {"widthCm": 90, "price": 540, "priceBasis": "linearM"}], "panels": [{"id": "hood", "name": "引擎蓋", "widthCm": 125, "heightCm": 95, "quantity": 1, "allowanceCm": 5, "allowedWidthsCm": [150, 120, 90], "allowRotate": false, "allowSplice": false, "spliceOverlapCm": null, "retainedAreaM2": 1.05}, {"id": "roof", "name": "車頂", "widthCm": 120, "heightCm": 175, "quantity": 1, "allowanceCm": 5, "allowedWidthsCm": [150], "allowRotate": false, "allowSplice": false, "spliceOverlapCm": null, "retainedAreaM2": 1.8}, {"id": "front-fender", "name": "前葉子板", "widthCm": 55, "heightCm": 85, "quantity": 2, "allowanceCm": 5, "allowedWidthsCm": [150, 120, 90], "allowRotate": true, "allowSplice": false, "spliceOverlapCm": null, "retainedAreaM2": 0.38}, {"id": "rear-quarter", "name": "後側板", "widthCm": 65, "heightCm": 110, "quantity": 2, "allowanceCm": 5, "allowedWidthsCm": [150, 120, 90], "allowRotate": false, "allowSplice": false, "spliceOverlapCm": null, "retainedAreaM2": 0.6}, {"id": "front-door", "name": "前車門", "widthCm": 80, "heightCm": 110, "quantity": 2, "allowanceCm": 5, "allowedWidthsCm": [150, 120, 90], "allowRotate": false, "allowSplice": false, "spliceOverlapCm": null, "retainedAreaM2": 0.8}, {"id": "rear-door", "name": "後車門", "widthCm": 75, "heightCm": 110, "quantity": 2, "allowanceCm": 5, "allowedWidthsCm": [150, 120, 90], "allowRotate": false, "allowSplice": false, "spliceOverlapCm": null, "retainedAreaM2": 0.72}, {"id": "tailgate", "name": "尾門", "widthCm": 105, "heightCm": 80, "quantity": 1, "allowanceCm": 5, "allowedWidthsCm": [150, 120, 90], "allowRotate": false, "allowSplice": false, "spliceOverlapCm": null, "retainedAreaM2": 0.7}, {"id": "front-bumper", "name": "前保桿", "widthCm": 55, "heightCm": 200, "quantity": 1, "allowanceCm": 5, "allowedWidthsCm": [150, 120, 90], "allowRotate": false, "allowSplice": false, "spliceOverlapCm": null, "retainedAreaM2": 0.85}, {"id": "rear-bumper", "name": "後保桿", "widthCm": 55, "heightCm": 190, "quantity": 1, "allowanceCm": 5, "allowedWidthsCm": [150, 120, 90], "allowRotate": false, "allowSplice": false, "spliceOverlapCm": null, "retainedAreaM2": 0.8}, {"id": "mirror", "name": "後視鏡", "widthCm": 25, "heightCm": 35, "quantity": 2, "allowanceCm": 3, "allowedWidthsCm": [150, 120, 90], "allowRotate": true, "allowSplice": false, "spliceOverlapCm": null, "retainedAreaM2": 0.06}, {"id": "side-skirt", "name": "側裙", "widthCm": 25, "heightCm": 180, "quantity": 2, "allowanceCm": 5, "allowedWidthsCm": [150, 120, 90], "allowRotate": false, "allowSplice": false, "spliceOverlapCm": null, "retainedAreaM2": 0.35}]}; </script><script src="./vehicle-profiles.js"></script><script>"use strict";
+var FilmCost;
+(function (FilmCost) {
+    const EPS = 1e-8;
+    const METHOD = 'FFDH shelves; two whole-panel orientation trials; equal-width splice strips; greedy mixed-stock assignment. Evaluated heuristic, not a global optimum.';
+    const sum = (values) => values.reduce((a, b) => a + b, 0);
+    const finite = (value) => typeof value === 'number' && Number.isFinite(value);
+    function validate(input) {
+        const errors = [];
+        if (!input || !Array.isArray(input.panels) || !Array.isArray(input.stocks))
+            return ['缺少 panels 或 stocks 陣列。'];
+        if (typeof input.label !== 'string')
+            errors.push('資料名稱必須為文字。');
+        if (!input.panels.length || !input.stocks.length)
+            errors.push('至少需要一項板件與一種卷材。');
+        if (!finite(input.gapCm) || input.gapCm < 0)
+            errors.push('間隔必須為非負公分數。');
+        if (!finite(input.billingStepCm) || input.billingStepCm <= 0)
+            errors.push('計費進位必須大於 0 公分。');
+        const widths = new Set(), ids = new Set();
+        input.stocks.forEach((stock, i) => {
+            if (!stock || !finite(stock.widthCm) || stock.widthCm <= 0) {
+                errors.push(`卷材 ${i + 1} 幅寬無效。`);
+                return;
+            }
+            if (widths.has(stock.widthCm))
+                errors.push(`卷材幅寬 ${stock.widthCm} 重複。`);
+            widths.add(stock.widthCm);
+            if (stock.price !== null && (!finite(stock.price) || stock.price < 0))
+                errors.push(`卷材 ${stock.widthCm} 價格無效。`);
+            if (stock.priceBasis !== 'linearM' && stock.priceBasis !== 'squareM')
+                errors.push(`卷材 ${stock.widthCm} 計價單位無效。`);
+        });
+        input.panels.forEach((panel, i) => {
+            if (!panel) {
+                errors.push(`板件 ${i + 1} 無效。`);
+                return;
+            }
+            const title = panel.name || `板件 ${i + 1}`;
+            if (typeof panel.name !== 'string' || !panel.name.trim())
+                errors.push(`板件 ${i + 1} 名稱必須為非空文字。`);
+            if (typeof panel.id !== 'string' || !panel.id.trim() || ids.has(panel.id))
+                errors.push(`${title} 的識別碼缺少或重複。`);
+            ids.add(panel.id);
+            if (![panel.widthCm, panel.heightCm].every(v => finite(v) && v > 0))
+                errors.push(`${title} 的印刷寬高必須大於 0。`);
+            if (!Number.isSafeInteger(panel.quantity) || panel.quantity <= 0)
+                errors.push(`${title} 數量必須為正整數。`);
+            if (!finite(panel.allowanceCm) || panel.allowanceCm < 0)
+                errors.push(`${title} 外留邊必須為非負數。`);
+            if (!Array.isArray(panel.allowedWidthsCm) || !panel.allowedWidthsCm.every(v => finite(v) && v > 0))
+                errors.push(`${title} 允許卷寬無效。`);
+            if (typeof panel.allowRotate !== 'boolean' || typeof panel.allowSplice !== 'boolean')
+                errors.push(`${title} 旋轉與拼接選项必須為布林值。`);
+            if (panel.spliceOverlapCm !== null && (!finite(panel.spliceOverlapCm) || panel.spliceOverlapCm < 0))
+                errors.push(`${title} 拼接重疊必須為非負數或未填。`);
+            const printArea = panel.widthCm * panel.heightCm / 10000;
+            if (panel.retainedAreaM2 !== null && (!finite(panel.retainedAreaM2) || panel.retainedAreaM2 < 0 || panel.retainedAreaM2 > printArea + EPS))
+                errors.push(`${title} 保留面積須介於 0 與原印刷矩形面積之間。`);
+            if (!finite((panel.widthCm + 2 * panel.allowanceCm) * (panel.heightCm + 2 * panel.allowanceCm) * panel.quantity))
+                errors.push(`${title} 面積超出可計算範圍。`);
+        });
+        return errors;
+    }
+    function shape(panel, stock, rotated) {
+        const cutW = panel.widthCm + 2 * panel.allowanceCm, cutH = panel.heightCm + 2 * panel.allowanceCm;
+        const width = rotated ? cutH : cutW, height = rotated ? cutW : cutH;
+        if (width <= stock.widthCm + EPS)
+            return { width, height, count: 1, rotated, extra: 0 };
+        const overlap = panel.spliceOverlapCm;
+        if (!panel.allowSplice || overlap === null || overlap >= stock.widthCm)
+            return null;
+        const count = Math.ceil((width - overlap) / (stock.widthCm - overlap));
+        return { width: (width + (count - 1) * overlap) / count, height, count, rotated, extra: (count - 1) * overlap * height / 10000 };
+    }
+    function packTrial(panels, stock, input, rotatedFirst) {
+        const placements = [], reasons = [];
+        let spliceExtra = 0;
+        for (const panel of panels) {
+            if (!panel.allowedWidthsCm.includes(stock.widthCm)) {
+                reasons.push(`${panel.name} 不允許使用 ${stock.widthCm} cm 卷材。`);
+                continue;
+            }
+            const preferred = rotatedFirst && panel.allowRotate;
+            const geometry = shape(panel, stock, preferred) ?? (panel.allowRotate ? shape(panel, stock, !preferred) : null);
+            if (!geometry) {
+                reasons.push(`${panel.name} 無法容納於 ${stock.widthCm} cm：旋轉／拼接限制或重疊資料不足。`);
+                continue;
+            }
+            spliceExtra += geometry.extra * panel.quantity;
+            for (let copy = 1; copy <= panel.quantity; copy++)
+                for (let strip = 1; strip <= geometry.count; strip++) {
+                    placements.push({ panelId: panel.id, label: panel.name, copyIndex: copy, stripIndex: strip, stripCount: geometry.count, rotated: geometry.rotated, xCm: 0, yCm: 0, widthCm: geometry.width, heightCm: geometry.height });
+                }
+        }
+        if (reasons.length)
+            return { plan: null, reasons };
+        placements.sort((a, b) => b.heightCm - a.heightCm || b.widthCm - a.widthCm);
+        const shelves = [];
+        for (const rect of placements) {
+            let shelf = shelves.find(s => rect.heightCm <= s.height + EPS && s.right + input.gapCm + rect.widthCm <= stock.widthCm + EPS);
+            if (shelf)
+                rect.xCm = shelf.right + input.gapCm;
+            else {
+                const previous = shelves[shelves.length - 1];
+                shelf = { y: previous ? previous.y + previous.height + input.gapCm : 0, height: rect.heightCm, right: 0 };
+                shelves.push(shelf);
+            }
+            rect.yCm = shelf.y;
+            shelf.right = rect.xCm + rect.widthCm;
+        }
+        const last = shelves[shelves.length - 1];
+        const usedLengthCm = last ? last.y + last.height : 0;
+        const steps = usedLengthCm / input.billingStepCm;
+        const billedLengthCm = Math.max(1, Math.ceil(steps - Number.EPSILON * Math.max(1, steps) * 8)) * input.billingStepCm;
+        const stockAreaM2 = stock.widthCm * billedLengthCm / 10000;
+        const rectangleAreaM2 = sum(placements.map(p => p.widthCm * p.heightCm / 10000));
+        const originalPrintAreaM2 = sum(panels.map(p => p.widthCm * p.heightCm * p.quantity / 10000));
+        const outerAllowanceAreaM2 = sum(panels.map(p => ((p.widthCm + 2 * p.allowanceCm) * (p.heightCm + 2 * p.allowanceCm) - p.widthCm * p.heightCm) * p.quantity / 10000));
+        const retainedAreaM2 = panels.every(p => p.retainedAreaM2 !== null) ? sum(panels.map(p => p.retainedAreaM2 * p.quantity)) : null;
+        const contourTrimAreaM2 = retainedAreaM2 === null ? null : Math.max(0, originalPrintAreaM2 - retainedAreaM2);
+        const cost = stock.price === null ? null : stock.price * (stock.priceBasis === 'linearM' ? billedLengthCm / 100 : stockAreaM2);
+        const accounting = { stockAreaM2, rectangleAreaM2, layoutRemainderM2: Math.max(0, stockAreaM2 - rectangleAreaM2), originalPrintAreaM2, outerAllowanceAreaM2, spliceExtraAreaM2: spliceExtra, contourTrimAreaM2, trimAreaM2: contourTrimAreaM2 === null ? null : outerAllowanceAreaM2 + contourTrimAreaM2, retainedAreaM2 };
+        const allocations = panels.map(panel => {
+            const area = sum(placements.filter(p => p.panelId === panel.id).map(p => p.widthCm * p.heightCm / 10000));
+            return { panelId: panel.id, label: panel.name, quantity: panel.quantity, rectangleAreaM2: area, allocatedCost: cost === null ? null : cost * area / rectangleAreaM2, allocationBasis: 'blank rectangle area; not independent purchase cost' };
+        });
+        return { plan: { stock: { ...stock }, placements, usedLengthCm, billedLengthCm, cost, accounting, allocations, orientationTrial: rotatedFirst ? 'rotated-first' : 'native-first' }, reasons: [] };
+    }
+    function choose(plans) {
+        const known = plans.every(p => p.cost !== null);
+        return [...plans].sort((a, b) => (known ? a.cost - b.cost : a.accounting.stockAreaM2 - b.accounting.stockAreaM2) || a.accounting.stockAreaM2 - b.accounting.stockAreaM2 || a.usedLengthCm - b.usedLengthCm)[0];
+    }
+    function pack(panels, stock, input) {
+        const native = packTrial(panels, stock, input, false);
+        if (!panels.some(p => p.allowRotate))
+            return native;
+        const rotated = packTrial(panels, stock, input, true);
+        const candidates = [native.plan, rotated.plan].filter((p) => p !== null);
+        return candidates.length ? { plan: choose(candidates), reasons: [] } : native;
+    }
+    function aggregate(plans) {
+        const numeric = (key) => sum(plans.map(p => p.accounting[key] ?? 0));
+        const optional = (key) => plans.every(p => p.accounting[key] !== null) ? numeric(key) : null;
+        return { stockAreaM2: numeric('stockAreaM2'), rectangleAreaM2: numeric('rectangleAreaM2'), layoutRemainderM2: numeric('layoutRemainderM2'), originalPrintAreaM2: numeric('originalPrintAreaM2'), outerAllowanceAreaM2: numeric('outerAllowanceAreaM2'), spliceExtraAreaM2: numeric('spliceExtraAreaM2'), contourTrimAreaM2: optional('contourTrimAreaM2'), trimAreaM2: optional('trimAreaM2'), retainedAreaM2: optional('retainedAreaM2') };
+    }
+    function scenario(id, label, kind, plans, reasons) {
+        const feasible = reasons.length === 0;
+        return { id, label, kind, feasible, reasons, plans: feasible ? plans : [], cost: feasible && plans.every(p => p.cost !== null) ? sum(plans.map(p => p.cost)) : null, accounting: feasible ? aggregate(plans) : null };
+    }
+    function calculate(input) {
+        const errors = validate(input);
+        if (errors.length)
+            return { valid: false, errors, scenarios: [], recommendedScenarioId: null, recommendationReason: '輸入無效，未排版。', method: METHOD };
+        const scenarios = input.stocks.map(stock => {
+            const attempt = pack(input.panels, stock, input);
+            return scenario(`single-${stock.widthCm}`, `${stock.widthCm} cm 單一卷寬`, 'single-width', attempt.plan ? [attempt.plan] : [], attempt.reasons);
+        });
+        const assignments = new Map(), reasons = [];
+        for (const panel of input.panels) {
+            const candidates = input.stocks.map(stock => pack([panel], stock, input)).flatMap(a => a.plan ? [a.plan] : []);
+            if (!candidates.length) {
+                reasons.push(`${panel.name} 在所有允許卷寬均無可行排法。`);
+                continue;
+            }
+            const width = choose(candidates).stock.widthCm;
+            assignments.set(width, [...(assignments.get(width) ?? []), panel]);
+        }
+        const mixed = [];
+        if (!reasons.length)
+            for (const stock of input.stocks) {
+                const panels = assignments.get(stock.widthCm);
+                if (!panels)
+                    continue;
+                const attempt = pack(panels, stock, input);
+                if (attempt.plan)
+                    mixed.push(attempt.plan);
+                else
+                    reasons.push(...attempt.reasons);
+            }
+        scenarios.push(scenario('mixed-greedy', '混用卷寬（逐板件貪婪選擇後重排）', 'mixed-greedy', mixed, reasons));
+        const feasible = scenarios.filter(s => s.feasible);
+        const pricesKnown = input.stocks.every(s => s.price !== null);
+        const best = pricesKnown ? [...feasible].sort((a, b) => a.cost - b.cost || a.accounting.stockAreaM2 - b.accounting.stockAreaM2)[0] : undefined;
+        return { valid: true, errors: [], scenarios, recommendedScenarioId: best?.id ?? null, recommendationReason: !feasible.length ? '所有評估方案均不可行。' : !pricesKnown ? '有卷材價格未知，僅比較排版與面積，不推薦最低費用。' : '建議為本次已評估可行方案中最低費用者；不保證全域最佳。', method: METHOD };
+    }
+    FilmCost.calculate = calculate;
+})(FilmCost || (FilmCost = {}));
+
+"use strict";
+var FilmCostData;
+(function (FilmCostData) {
+    FilmCostData.basisLabels = { 'simulation': '模擬尺寸', 'template-derived': '模板推算・未實測', 'manual-unverified': '手動輸入・未驗證', 'user-measured': '使用者聲明實測・未複核' };
+    FilmCostData.manualSource = () => ({ dimensionBasis: 'manual-unverified', reference: '使用者手動輸入；未提供可複核的量測資料。', notes: '尺寸與適用車型請自行核對。', conditionsBasis: '使用者輸入；施工條件未由工具驗證。' });
+    function sourceFor(input, panelId) { return input.panelSources && Object.hasOwn(input.panelSources, panelId) ? input.panelSources[panelId] : FilmCostData.manualSource(); }
+    FilmCostData.sourceFor = sourceFor;
+    function validateSources(input) {
+        if (input.panelSources === undefined)
+            return;
+        if (!input.panelSources || typeof input.panelSources !== 'object' || Array.isArray(input.panelSources))
+            throw new Error('panelSources 必須是部位來源物件。');
+        for (const source of Object.values(input.panelSources)) {
+            if (!source || !Object.hasOwn(FilmCostData.basisLabels, source.dimensionBasis) || ![source.reference, source.notes, source.conditionsBasis].every(s => typeof s === 'string'))
+                throw new Error('尺寸來源格式無效。');
+        }
+    }
+    FilmCostData.validateSources = validateSources;
+    function simulation(input) {
+        const data = structuredClone(input);
+        data.panelSources = Object.create(null);
+        for (const p of data.panels)
+            data.panelSources[p.id] = { dimensionBasis: 'simulation', reference: '工具內建的虛構全車示例，非任何車型實測。', notes: '尺寸、保留面積、價格與施工條件全部是測試參數。', conditionsBasis: '模擬條件，非店家施工建議。' };
+        return data;
+    }
+    FilmCostData.simulation = simulation;
+    function recordEdits(source, before, after) {
+        const changed = before.widthCm !== after.widthCm || before.heightCm !== after.heightCm || before.name !== after.name;
+        const conditionsChanged = ['allowanceCm', 'retainedAreaM2', 'allowRotate', 'allowSplice', 'spliceOverlapCm', 'quantity', 'allowedWidthsCm'].some(key => JSON.stringify(before[key]) !== JSON.stringify(after[key]));
+        return { ...source, ...(changed ? { dimensionBasis: 'manual-unverified', notes: '部位名稱或寬／長已手動修改，未驗證。原參考來源保留於下方，不代表目前尺寸仍由該來源提供。' } : {}), ...(conditionsChanged ? { conditionsBasis: '施工條件或保留面積已手動修改；未由工具驗證。' } : {}) };
+    }
+    FilmCostData.recordEdits = recordEdits;
+    function profileInput(vehicle, part, stocks) {
+        return { label: vehicle.name + '／' + part.panel.name, panels: [structuredClone(part.panel)], panelSources: { [part.panel.id]: structuredClone(part.source) }, stocks: stocks.map(s => ({ ...s, price: null })), gapCm: 1, billingStepCm: 10 };
+    }
+    FilmCostData.profileInput = profileInput;
+})(FilmCostData || (FilmCostData = {}));
+
+"use strict";
+var FilmCostUI;
+(function (FilmCostUI) {
+    let data = FilmCostData.simulation(FILM_COST_SIMULATION);
+    let enabledWidths = new Set(data.stocks.map(s => s.widthCm));
+    let selectedId = null;
+    let lastInput = null;
+    let lastResult = null;
+    const formatter = new Intl.NumberFormat('zh-TW', { maximumFractionDigits: 2 });
+    const fmt = (n) => n === null ? '未知' : formatter.format(n);
+    const esc = (s) => s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    function el(id) { const found = document.getElementById(id); if (!found)
+        throw new Error(`Missing ${id}`); return found; }
+    const numberInput = (field, value, label, step = '0.1') => `<input type="number" data-field="${field}" value="${value !== null && Number.isFinite(value) ? value : ''}" step="${step}" aria-label="${esc(label)}">`;
+    function sourceMarkup(source) { return `<span class="source-badge">${FilmCostData.basisLabels[source.dimensionBasis]}</span><details class="source-detail"><summary>來源與限制</summary><p>${esc(source.reference)}</p><p>${esc(source.notes)}</p><p>${esc(source.conditionsBasis)}</p></details>`; }
+    function showSources(input) {
+        for (const cell of el('panels').querySelectorAll('[data-source]'))
+            cell.innerHTML = sourceMarkup(FilmCostData.sourceFor(input, cell.dataset.source));
+        const bases = [...new Set(input.panels.map(p => FilmCostData.basisLabels[FilmCostData.sourceFor(input, p.id).dimensionBasis]))];
+        el('provenance').textContent = `尺寸依據：${bases.join('／') || '尚未輸入'}。尺寸、施工條件與材料價格均未由本工具驗證；此工具不提供正式報價。`;
+    }
+    function renderInputs() {
+        el('data-label').value = data.label;
+        el('gap').value = String(data.gapCm);
+        el('billing-step').value = String(data.billingStepCm);
+        el('stocks').innerHTML = data.stocks.map((s, i) => `<tr data-stock="${i}"><td><input type="checkbox" data-enabled ${enabledWidths.has(s.widthCm) ? 'checked' : ''} aria-label="使用 ${s.widthCm} cm"></td><td>${s.widthCm} cm</td><td>${numberInput('price', s.price, `${s.widthCm}cm單價`)}</td><td><select data-basis aria-label="${s.widthCm}cm計價單位"><option value="linearM" ${s.priceBasis === 'linearM' ? 'selected' : ''}>每延米</option><option value="squareM" ${s.priceBasis === 'squareM' ? 'selected' : ''}>每㎡</option></select></td></tr>`).join('');
+        el('panels').innerHTML = data.panels.map((p, i) => `<tr data-row="${i}"><td><input class="name" data-field="name" value="${esc(p.name)}" aria-label="部位名稱"></td><td>${numberInput('widthCm', p.widthCm, `${p.name}寬`)}</td><td>${numberInput('heightCm', p.heightCm, `${p.name}長`)}</td><td>${numberInput('quantity', p.quantity, `${p.name}數量`, '1')}</td><td>${numberInput('allowanceCm', p.allowanceCm, `${p.name}每邊餘量`)}</td><td><div class="checkset">${data.stocks.map(s => `<label><input type="checkbox" data-width="${s.widthCm}" ${p.allowedWidthsCm.includes(s.widthCm) ? 'checked' : ''}>${s.widthCm}</label>`).join('')}</div></td><td><input type="checkbox" data-field="allowRotate" ${p.allowRotate ? 'checked' : ''} aria-label="${esc(p.name)}可旋轉"></td><td><input type="checkbox" data-field="allowSplice" ${p.allowSplice ? 'checked' : ''} aria-label="${esc(p.name)}可拼接"></td><td>${numberInput('spliceOverlapCm', p.spliceOverlapCm, `${p.name}拼接重疊`)}</td><td>${numberInput('retainedAreaM2', p.retainedAreaM2, `${p.name}每塊保留面積`, '0.01')}</td><td data-source="${esc(p.id)}"></td><td><button data-delete="${i}" aria-label="刪除${esc(p.name)}">刪除</button></td></tr>`).join('');
+        showSources(data);
+        el('panel-count').textContent = `（${data.panels.length} 類／${data.panels.reduce((n, p) => n + p.quantity, 0)} 塊）`;
+    }
+    function readInputs(includeDisabled = false) {
+        const stocks = [];
+        enabledWidths = new Set();
+        for (const row of el('stocks').querySelectorAll('tr')) {
+            const i = Number(row.dataset.stock), price = row.querySelector('[data-field="price"]');
+            if (row.querySelector('[data-enabled]').checked)
+                enabledWidths.add(data.stocks[i].widthCm);
+            if (includeDisabled || row.querySelector('[data-enabled]').checked)
+                stocks.push({ widthCm: data.stocks[i].widthCm, price: price.value.trim() === '' ? null : Number(price.value), priceBasis: row.querySelector('[data-basis]').value });
+        }
+        const panels = [];
+        const panelSources = Object.create(null);
+        for (const row of el('panels').querySelectorAll('tr')) {
+            const prior = data.panels[Number(row.dataset.row)];
+            const field = (name) => row.querySelector(`[data-field="${name}"]`);
+            const num = (name) => field(name).value.trim() === '' ? NaN : Number(field(name).value);
+            const optional = (name) => field(name).value.trim() === '' ? null : Number(field(name).value);
+            panels.push({ id: prior.id, name: field('name').value, widthCm: num('widthCm'), heightCm: num('heightCm'), quantity: num('quantity'), allowanceCm: num('allowanceCm'), allowedWidthsCm: [...row.querySelectorAll('[data-width]:checked')].map(input => Number(input.dataset.width)), allowRotate: field('allowRotate').checked, allowSplice: field('allowSplice').checked, spliceOverlapCm: optional('spliceOverlapCm'), retainedAreaM2: optional('retainedAreaM2') });
+            panelSources[prior.id] = FilmCostData.recordEdits(FilmCostData.sourceFor(data, prior.id), prior, panels[panels.length - 1]);
+        }
+        return { label: el('data-label').value, stocks, panels, panelSources, gapCm: Number(el('gap').value), billingStepCm: Number(el('billing-step').value) };
+    }
+    function diagram(plan) {
+        const scale = .75, left = 55, top = 26, length = plan.billedLengthCm;
+        const width = Math.max(280, length * scale + 80), height = plan.stock.widthCm * scale + 70;
+        const byId = new Map(lastInput.panels.map((p, i) => [p.id, i + 1]));
+        let svg = `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" role="img" aria-label="${plan.stock.widthCm}cm卷材排版"><rect x="${left}" y="${top}" width="${length * scale}" height="${plan.stock.widthCm * scale}" fill="#fff4d9" stroke="#a7bac5"/><text x="6" y="${top + 12}" font-size="11">${plan.stock.widthCm}cm</text>`;
+        for (let cm = 0; cm <= length; cm += 100)
+            svg += `<path d="M${left + cm * scale} ${top - 5}v-5" stroke="#66808e"/><text x="${left + cm * scale}" y="15" font-size="11">${fmt(cm / 100)}m</text>`;
+        for (const p of plan.placements) {
+            const x = left + p.yCm * scale, y = top + p.xCm * scale, w = p.heightCm * scale, h = p.widthCm * scale;
+            const name = `${p.label} 第${p.copyIndex}塊${p.stripCount > 1 ? ` 分片${p.stripIndex}/${p.stripCount}` : ''}；${fmt(p.widthCm)}×${fmt(p.heightCm)}cm${p.rotated ? '，旋轉90°' : ''}`;
+            svg += `<g><title>${esc(name)}</title><rect x="${x}" y="${y}" width="${w}" height="${h}" fill="#b9ddd9" stroke="#568986" stroke-width=".8"/>${w > 22 && h > 16 ? `<text x="${x + 3}" y="${y + 13}" font-size="11" fill="#173e44">${byId.get(p.panelId)}</text>` : ''}</g>`;
+        }
+        svg += `<path d="M${left + plan.usedLengthCm * scale} ${top}v${plan.stock.widthCm * scale}" stroke="#c68a25" stroke-dasharray="3 3"/><text x="${left}" y="${height - 10}" font-size="11">實際走料 ${fmt(plan.usedLengthCm / 100)}m；採購 ${fmt(length / 100)}m；黃底＝排版餘料（含間隔／進位）</text></svg>`;
+        return svg;
+    }
+    function showScenario(result) {
+        const feasible = result.scenarios.filter(s => s.feasible);
+        if (!feasible.some(s => s.id === selectedId))
+            selectedId = result.recommendedScenarioId ?? feasible[0]?.id ?? null;
+        const chosen = feasible.find(s => s.id === selectedId);
+        el('recommendation').innerHTML = result.recommendedScenarioId ? `<b class="good">推薦：${esc(result.scenarios.find(s => s.id === result.recommendedScenarioId).label)}</b>。${esc(result.recommendationReason)}` : esc(result.recommendationReason);
+        el('scenarios').innerHTML = result.scenarios.map(s => `<tr><td>${esc(s.label)}</td><td class="${s.feasible ? 'good' : 'bad'}">${s.feasible ? '可行' : esc(s.reasons.join('；'))}</td><td>${s.feasible ? fmt(s.plans.reduce((n, p) => n + p.billedLengthCm / 100, 0)) + 'm' : '—'}</td><td>${s.accounting ? fmt(s.accounting.stockAreaM2) : '—'}</td><td>${s.feasible ? fmt(s.cost) : '—'}</td><td>${s.feasible ? `<button data-scenario="${esc(s.id)}" class="${s.id === selectedId ? 'selected' : ''}">檢視</button>` : ''}</td></tr>`).join('');
+        if (!chosen || !chosen.accounting) {
+            for (const id of ['metrics', 'accounting', 'stock-summary', 'rolls', 'panel-costs'])
+                el(id).innerHTML = '';
+            el('chosen').textContent = '沒有可行方案：請調整尺寸、指定幅寬或施工條件。';
+            return;
+        }
+        const a = chosen.accounting;
+        el('chosen').textContent = '目前檢視：' + chosen.label;
+        el('metrics').innerHTML = [['採購材料㎡', fmt(a.stockAreaM2)], ['排版餘料㎡', fmt(a.layoutRemainderM2)], ['完整施工修邊㎡', fmt(a.trimAreaM2)], ['材料成本 NT$', fmt(chosen.cost)]].map(([label, value]) => `<div class="metric"><span>${label}</span><strong>${value}</strong></div>`).join('');
+        el('accounting').innerHTML = `<h2>面積分帳</h2><table><tbody>${[['印製分片矩形', a.rectangleAreaM2], ['其中：四邊施工餘量', a.outerAllowanceAreaM2], ['其中：輪廓修邊', a.contourTrimAreaM2], ['拼接重疊額外', a.spliceExtraAreaM2], ['施工後淨覆蓋', a.retainedAreaM2]].map(([label, value]) => `<tr><td>${label}</td><td>${fmt(value)}㎡</td></tr>`).join('')}</tbody></table>${a.trimAreaM2 === null ? '<p class="muted">保留面積未齊：完整修邊未知；四邊餘量已能確定，不重複加到材料費。</p>' : ''}`;
+        el('stock-summary').innerHTML = `<h2>各幅採購</h2><table><thead><tr><th>幅寬</th><th>走料</th><th>採購</th><th>材料費</th></tr></thead><tbody>${chosen.plans.map(p => `<tr><td>${p.stock.widthCm}cm</td><td>${fmt(p.usedLengthCm / 100)}m</td><td>${fmt(p.billedLengthCm / 100)}m</td><td>${fmt(p.cost)}</td></tr>`).join('')}</tbody></table>`;
+        el('rolls').innerHTML = chosen.plans.map(p => `<div class="roll"><h2>${p.stock.widthCm}cm 幅寬／${fmt(p.billedLengthCm / 100)}m</h2><div class="roll-scroll">${diagram(p)}</div></div>`).join('') + `<p class="muted">圖中編號：${lastInput.panels.map((p, i) => `${i + 1} ${esc(p.name)}`).join(' · ')}。滑鼠停在矩形可看分片與尺寸；走料方向由左至右。</p>`;
+        el('panel-costs').innerHTML = chosen.plans.flatMap(plan => plan.allocations.map(allocation => {
+            const panel = lastInput.panels.find(p => p.id === allocation.panelId);
+            const base = (panel.widthCm + 2 * panel.allowanceCm) * (panel.heightCm + 2 * panel.allowanceCm) / 10000 * panel.quantity;
+            const extra = Math.max(0, allocation.rectangleAreaM2 - base);
+            const trim = panel.retainedAreaM2 === null ? null : base - panel.retainedAreaM2 * panel.quantity;
+            return `<tr><td>${esc(panel.name)}</td><td>${panel.quantity}</td><td>${plan.stock.widthCm}cm</td><td>${fmt(allocation.rectangleAreaM2)}</td><td>${fmt(extra)}</td><td>${fmt(trim)}</td><td>${fmt(allocation.allocatedCost)}</td></tr>`;
+        })).join('');
+    }
+    function calculate() {
+        try {
+            data = readInputs(true);
+            showSources(data);
+            const input = { ...data, stocks: data.stocks.filter(s => enabledWidths.has(s.widthCm)) };
+            FilmCostData.validateSources(input);
+            const missing = input.panels.filter(p => !Number.isFinite(p.widthCm) || !Number.isFinite(p.heightCm));
+            if (missing.length)
+                throw new Error(`請先填寫 ${missing.map(p => '「' + p.name + '」').join('、')} 的寬與長（cm）；未知尺寸不會自動推測。`);
+            if (input.panels.length > 200 || input.panels.reduce((n, p) => n + p.quantity, 0) > 500)
+                throw new Error('線上試用每次最多 200 類、500 塊面板，請分批試算。');
+            const result = FilmCost.calculate(input);
+            if (!result.valid)
+                throw new Error(result.errors.join('；'));
+            lastInput = input;
+            lastResult = result;
+            el('error').hidden = true;
+            el('results').hidden = false;
+            el('panel-count').textContent = `（${input.panels.length} 類／${input.panels.reduce((n, p) => n + p.quantity, 0)} 塊）`;
+            showScenario(result);
+        }
+        catch (error) {
+            el('error').hidden = false;
+            el('error').className = 'errors';
+            el('error').textContent = error instanceof Error ? error.message : String(error);
+            el('results').hidden = true;
+            lastResult = null;
+        }
+    }
+    function download(name, value) {
+        const url = URL.createObjectURL(new Blob([JSON.stringify(value, null, 2)], { type: 'application/json' }));
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = name;
+        a.click();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+    el('calculate').addEventListener('click', calculate);
+    function loadData(next) { data = next; enabledWidths = new Set(data.stocks.map(s => s.widthCm)); selectedId = null; renderInputs(); calculate(); }
+    el('load-example').addEventListener('click', () => { el('vehicle').value = 'simulation'; updateParts(); loadData(FilmCostData.simulation(FILM_COST_SIMULATION)); });
+    el('save-input').addEventListener('click', () => { calculate(); if (lastResult)
+        download('film-material-input.json', lastInput); });
+    el('save-result').addEventListener('click', () => { calculate(); if (lastResult)
+        download('film-material-result.json', { input: lastInput, result: lastResult, scope: 'Material estimate only; heuristic layouts, not a formal quote' }); });
+    el('import-input').addEventListener('click', () => el('import-file').click());
+    el('import-file').addEventListener('change', async (event) => {
+        const input = event.target;
+        const file = input.files?.[0];
+        if (!file)
+            return;
+        try {
+            if (file.size > 1024 * 1024)
+                throw new Error('JSON 檔案上限 1 MB。');
+            const raw = JSON.parse(await file.text());
+            const parsed = (raw?.input ?? raw);
+            FilmCostData.validateSources(parsed);
+            if (!Array.isArray(parsed?.panels) || parsed.panels.length > 200 || parsed.panels.reduce((n, p) => n + (p?.quantity ?? 0), 0) > 500)
+                throw new Error('請使用最多 200 類、500 塊的面板資料。');
+            const test = FilmCost.calculate(parsed);
+            if (!test.valid)
+                throw new Error(test.errors.join('；'));
+            el('vehicle').value = 'manual';
+            updateParts();
+            loadData(parsed);
+        }
+        catch (error) {
+            el('error').hidden = false;
+            el('error').className = 'errors';
+            el('error').textContent = '匯入失敗：' + (error instanceof Error ? error.message : String(error));
+        }
+        input.value = '';
+    });
+    function blankPanel() { return { id: 'panel-' + crypto.randomUUID(), name: '新部位', widthCm: NaN, heightCm: NaN, quantity: 1, allowanceCm: 0, allowedWidthsCm: data.stocks.map(s => s.widthCm), allowRotate: false, allowSplice: false, spliceOverlapCm: null, retainedAreaM2: null }; }
+    el('add-panel').addEventListener('click', () => { data = readInputs(true); data.panels.push(blankPanel()); renderInputs(); calculate(); });
+    el('panels').addEventListener('click', event => { const button = event.target.closest('[data-delete]'); if (!button)
+        return; data = readInputs(true); data.panels.splice(Number(button.dataset.delete), 1); renderInputs(); calculate(); });
+    el('scenarios').addEventListener('click', event => { const button = event.target.closest('[data-scenario]'); if (!button || !lastResult)
+        return; selectedId = button.dataset.scenario; showScenario(lastResult); });
+    for (const id of ['stocks', 'panels', 'gap', 'billing-step', 'data-label'])
+        el(id).addEventListener('change', calculate);
+    function updateParts() {
+        const id = el('vehicle').value, vehicle = FILM_COST_VEHICLES.vehicles.find(v => v.id === id);
+        el('part').disabled = !vehicle;
+        el('part').innerHTML = vehicle ? vehicle.parts.map(p => `<option value="${esc(p.panel.id)}">${esc(p.panel.name)}</option>`).join('') : '<option>全部模擬部位／手動新增</option>';
+        el('profile-note').textContent = vehicle ? '目前只有引擎蓋的模板投影參考。非實測尺寸；此方向超過 150 cm 幅寬，預設不旋轉／不拼接會顯示不可行。請先與施工方核對方向、餘量及尺寸，工具不會替你改成可行。' : id === 'manual' ? '沒有車型資料也可自行輸入。寬、長與材料價格不會猜測；旋轉／拼接預設關閉。' : '17 塊全車面板皆為虛構；可先修改價格或尺寸，觀察結果變化。';
+    }
+    el('vehicle').innerHTML = '<option value="simulation">模擬全車（教學示例，非實車）</option>' + FILM_COST_VEHICLES.vehicles.map(v => `<option value="${esc(v.id)}">${esc(v.name)}</option>`).join('') + '<option value="manual">其他車型／手動輸入</option>';
+    el('vehicle').addEventListener('change', updateParts);
+    el('apply-profile').addEventListener('click', () => {
+        const id = el('vehicle').value;
+        if (id === 'simulation') {
+            loadData(FilmCostData.simulation(FILM_COST_SIMULATION));
+            return;
+        }
+        const vehicle = FILM_COST_VEHICLES.vehicles.find(v => v.id === id);
+        if (vehicle) {
+            const part = vehicle.parts.find(p => p.panel.id === el('part').value);
+            loadData(FilmCostData.profileInput(vehicle, part, FILM_COST_SIMULATION.stocks));
+        }
+        else {
+            data = { label: '手動案件（未提供尺寸依據）', panels: [], stocks: FILM_COST_SIMULATION.stocks.map(s => ({ ...s, price: null })), gapCm: 1, billingStepCm: 10 };
+            data.panels.push(blankPanel());
+            loadData(data);
+        }
+    });
+    updateParts();
+    renderInputs();
+    calculate();
+})(FilmCostUI || (FilmCostUI = {}));
+</script></body></html>

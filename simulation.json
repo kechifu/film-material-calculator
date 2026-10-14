@@ -1,0 +1,277 @@
+{
+  "label": "模擬全車示例（17塊）；非 Corolla Cross 實測尺寸，價格與施工限制皆為示例",
+  "gapCm": 1,
+  "billingStepCm": 10,
+  "stocks": [
+    {
+      "widthCm": 150,
+      "price": 900,
+      "priceBasis": "linearM"
+    },
+    {
+      "widthCm": 120,
+      "price": 720,
+      "priceBasis": "linearM"
+    },
+    {
+      "widthCm": 90,
+      "price": 540,
+      "priceBasis": "linearM"
+    }
+  ],
+  "panels": [
+    {
+      "id": "hood",
+      "name": "引擎蓋",
+      "widthCm": 125,
+      "heightCm": 95,
+      "quantity": 1,
+      "allowanceCm": 5,
+      "allowedWidthsCm": [
+        150,
+        120,
+        90
+      ],
+      "allowRotate": false,
+      "allowSplice": false,
+      "spliceOverlapCm": null,
+      "retainedAreaM2": 1.05
+    },
+    {
+      "id": "roof",
+      "name": "車頂",
+      "widthCm": 120,
+      "heightCm": 175,
+      "quantity": 1,
+      "allowanceCm": 5,
+      "allowedWidthsCm": [
+        150
+      ],
+      "allowRotate": false,
+      "allowSplice": false,
+      "spliceOverlapCm": null,
+      "retainedAreaM2": 1.8
+    },
+    {
+      "id": "front-fender",
+      "name": "前葉子板",
+      "widthCm": 55,
+      "heightCm": 85,
+      "quantity": 2,
+      "allowanceCm": 5,
+      "allowedWidthsCm": [
+        150,
+        120,
+        90
+      ],
+      "allowRotate": true,
+      "allowSplice": false,
+      "spliceOverlapCm": null,
+      "retainedAreaM2": 0.38
+    },
+    {
+      "id": "rear-quarter",
+      "name": "後側板",
+      "widthCm": 65,
+      "heightCm": 110,
+      "quantity": 2,
+      "allowanceCm": 5,
+      "allowedWidthsCm": [
+        150,
+        120,
+        90
+      ],
+      "allowRotate": false,
+      "allowSplice": false,
+      "spliceOverlapCm": null,
+      "retainedAreaM2": 0.6
+    },
+    {
+      "id": "front-door",
+      "name": "前車門",
+      "widthCm": 80,
+      "heightCm": 110,
+      "quantity": 2,
+      "allowanceCm": 5,
+      "allowedWidthsCm": [
+        150,
+        120,
+        90
+      ],
+      "allowRotate": false,
+      "allowSplice": false,
+      "spliceOverlapCm": null,
+      "retainedAreaM2": 0.8
+    },
+    {
+      "id": "rear-door",
+      "name": "後車門",
+      "widthCm": 75,
+      "heightCm": 110,
+      "quantity": 2,
+      "allowanceCm": 5,
+      "allowedWidthsCm": [
+        150,
+        120,
+        90
+      ],
+      "allowRotate": false,
+      "allowSplice": false,
+      "spliceOverlapCm": null,
+      "retainedAreaM2": 0.72
+    },
+    {
+      "id": "tailgate",
+      "name": "尾門",
+      "widthCm": 105,
+      "heightCm": 80,
+      "quantity": 1,
+      "allowanceCm": 5,
+      "allowedWidthsCm": [
+        150,
+        120,
+        90
+      ],
+      "allowRotate": false,
+      "allowSplice": false,
+      "spliceOverlapCm": null,
+      "retainedAreaM2": 0.7
+    },
+    {
+      "id": "front-bumper",
+      "name": "前保桿",
+      "widthCm": 55,
+      "heightCm": 200,
+      "quantity": 1,
+      "allowanceCm": 5,
+      "allowedWidthsCm": [
+        150,
+        120,
+        90
+      ],
+      "allowRotate": false,
+      "allowSplice": false,
+      "spliceOverlapCm": null,
+      "retainedAreaM2": 0.85
+    },
+    {
+      "id": "rear-bumper",
+      "name": "後保桿",
+      "widthCm": 55,
+      "heightCm": 190,
+      "quantity": 1,
+      "allowanceCm": 5,
+      "allowedWidthsCm": [
+        150,
+        120,
+        90
+      ],
+      "allowRotate": false,
+      "allowSplice": false,
+      "spliceOverlapCm": null,
+      "retainedAreaM2": 0.8
+    },
+    {
+      "id": "mirror",
+      "name": "後視鏡",
+      "widthCm": 25,
+      "heightCm": 35,
+      "quantity": 2,
+      "allowanceCm": 3,
+      "allowedWidthsCm": [
+        150,
+        120,
+        90
+      ],
+      "allowRotate": true,
+      "allowSplice": false,
+      "spliceOverlapCm": null,
+      "retainedAreaM2": 0.06
+    },
+    {
+      "id": "side-skirt",
+      "name": "側裙",
+      "widthCm": 25,
+      "heightCm": 180,
+      "quantity": 2,
+      "allowanceCm": 5,
+      "allowedWidthsCm": [
+        150,
+        120,
+        90
+      ],
+      "allowRotate": false,
+      "allowSplice": false,
+      "spliceOverlapCm": null,
+      "retainedAreaM2": 0.35
+    }
+  ],
+  "panelSources": {
+    "hood": {
+      "dimensionBasis": "simulation",
+      "reference": "工具內建的虛構全車示例，非任何車型實測。",
+      "notes": "尺寸、保留面積、價格與施工條件全部是測試參數。",
+      "conditionsBasis": "模擬條件，非店家施工建議。"
+    },
+    "roof": {
+      "dimensionBasis": "simulation",
+      "reference": "工具內建的虛構全車示例，非任何車型實測。",
+      "notes": "尺寸、保留面積、價格與施工條件全部是測試參數。",
+      "conditionsBasis": "模擬條件，非店家施工建議。"
+    },
+    "front-fender": {
+      "dimensionBasis": "simulation",
+      "reference": "工具內建的虛構全車示例，非任何車型實測。",
+      "notes": "尺寸、保留面積、價格與施工條件全部是測試參數。",
+      "conditionsBasis": "模擬條件，非店家施工建議。"
+    },
+    "rear-quarter": {
+      "dimensionBasis": "simulation",
+      "reference": "工具內建的虛構全車示例，非任何車型實測。",
+      "notes": "尺寸、保留面積、價格與施工條件全部是測試參數。",
+      "conditionsBasis": "模擬條件，非店家施工建議。"
+    },
+    "front-door": {
+      "dimensionBasis": "simulation",
+      "reference": "工具內建的虛構全車示例，非任何車型實測。",
+      "notes": "尺寸、保留面積、價格與施工條件全部是測試參數。",
+      "conditionsBasis": "模擬條件，非店家施工建議。"
+    },
+    "rear-door": {
+      "dimensionBasis": "simulation",
+      "reference": "工具內建的虛構全車示例，非任何車型實測。",
+      "notes": "尺寸、保留面積、價格與施工條件全部是測試參數。",
+      "conditionsBasis": "模擬條件，非店家施工建議。"
+    },
+    "tailgate": {
+      "dimensionBasis": "simulation",
+      "reference": "工具內建的虛構全車示例，非任何車型實測。",
+      "notes": "尺寸、保留面積、價格與施工條件全部是測試參數。",
+      "conditionsBasis": "模擬條件，非店家施工建議。"
+    },
+    "front-bumper": {
+      "dimensionBasis": "simulation",
+      "reference": "工具內建的虛構全車示例，非任何車型實測。",
+      "notes": "尺寸、保留面積、價格與施工條件全部是測試參數。",
+      "conditionsBasis": "模擬條件，非店家施工建議。"
+    },
+    "rear-bumper": {
+      "dimensionBasis": "simulation",
+      "reference": "工具內建的虛構全車示例，非任何車型實測。",
+      "notes": "尺寸、保留面積、價格與施工條件全部是測試參數。",
+      "conditionsBasis": "模擬條件，非店家施工建議。"
+    },
+    "mirror": {
+      "dimensionBasis": "simulation",
+      "reference": "工具內建的虛構全車示例，非任何車型實測。",
+      "notes": "尺寸、保留面積、價格與施工條件全部是測試參數。",
+      "conditionsBasis": "模擬條件，非店家施工建議。"
+    },
+    "side-skirt": {
+      "dimensionBasis": "simulation",
+      "reference": "工具內建的虛構全車示例，非任何車型實測。",
+      "notes": "尺寸、保留面積、價格與施工條件全部是測試參數。",
+      "conditionsBasis": "模擬條件，非店家施工建議。"
+    }
+  }
+}
